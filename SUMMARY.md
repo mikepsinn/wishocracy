@@ -9,8 +9,8 @@
 
 ## Product Guides
 
-* [📪 Making a post](product-guides/making-a-post.md)
-* [📎 Understanding Projects](product-guides/understanding-projects.md)
+* [📪 Making a Wish](product-guides/making-a-wish.md)
+* [📎 Understanding Wishing Wells](product-guides/understanding-wishing-wells.md)
 
 ## Fundamentals
 
@@ -20,5 +20,5 @@
 
 ## Use Cases
 
-* [🎨 For Designers](use-cases/for-designers.md)
+* [🎨 For DAOs](use-cases/for-daos.md)
 * [🖥 For Developers](use-cases/for-developers.md)
