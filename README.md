@@ -23,31 +23,113 @@ Every member of a Wishocratic DAO receives a universal basic income of 1 $WISH p
 
 If a Citizen has a wish, they can create a Wishing Well (similar to a feature request or a crowdfunding campaign) which describes their Wish, or search for an existing Wishing Well for the same Wish.  Once they find or create their Wishing Well, they can throw their $WISH(es) in the Wishing Well (known as staking in DeFi).
 
-\
+## The Wishocracatic Constitution
+
+### Article 1: Wishocratic Government
+
+#### Section 1: The Establishment of the Wishocratic Government
+
+It is established as a new form of government in which every individual (Wisher) is granted one $WISH per day.
+
+#### Section 2: The Wishing Wells&#x20;
+
+For each new $WISH submitted, a Wishing Well is created.
+
+The Wishing Well is the central repository for all $WISH associated with that particular Wish.&#x20;
+
+If multiple people have the same Wish, they may contribute their $WISH to the same Wishing Well.
+
+#### Section 3: Genie DAOs&#x20;
+
+Genie DAOs are comprised of any combination of businesses, nonprofits, governments, or individuals.
+
+Genie DAOs may apply to receive $WISH from a specific Wishing Well to fulfill a Wish.
+
+Genie DAOs must include both a GPI Lead Measure and a GPI Lag Measure in their proposals.
+
+#### Section 4: Granting of Wishes
+
+If a majority of Wishers vote that a particular Genie DAO has fulfilled a Wish, those fulfilling the given $WISH grant all $WISH in the Wishing Well.
+
+#### &#x20;Section 5: GPI Lead and Lag Measures
+
+A GPI Lead Measure is a predictive and proactive indicator of future performance that the performer can influence or control. It represents the activities and strategies that can be implemented to achieve the desired outcome and is measured to determine progress toward the goal.\
 
 
-## Quick links
+A GPI Lag Measure is a retrospective and reactive indicator of past performance, representing the outcomes that have already occurred and cannot be influenced or controlled by the performer. These measures are useful for evaluating whether the end goal has been accomplished.
 
-{% content-ref url="overview/what-we-do.md" %}
-[what-we-do.md](overview/what-we-do.md)
-{% endcontent-ref %}
+The formula for both the GPI Lead Measure and GPI Lag Measure, as well as the method of collecting the data, will be concretely defined before the approval of a Genie DAO contract.\
 
-{% content-ref url="overview/our-features.md" %}
-[our-features.md](overview/our-features.md)
-{% endcontent-ref %}
 
-## Get Started
+The current price of the $WISH tokens after tax and the number of wishes in the wishing well would dictate to which degree the lag measure would affect society.
 
-We've put together some helpful guides for you to get setup with our product quickly and easily.
+### Article 2: The Individual Rights and Freedoms
 
-{% content-ref url="fundamentals/getting-set-up/" %}
-[getting-set-up](fundamentals/getting-set-up/)
-{% endcontent-ref %}
+#### Section 1: The Right to Wishes&#x20;
 
-{% content-ref url="fundamentals/getting-set-up/setting-permissions.md" %}
-[setting-permissions.md](fundamentals/getting-set-up/setting-permissions.md)
-{% endcontent-ref %}
+Every individual has the right to submit one $WISH per day to a specific Wishing Well.
 
-{% content-ref url="fundamentals/getting-set-up/inviting-members.md" %}
-[inviting-members.md](fundamentals/getting-set-up/inviting-members.md)
-{% endcontent-ref %}
+#### Section 2: Non-discrimination&#x20;
+
+No $WISH is allowed to discriminate against race, color, religion, national origin, gender, sexual orientation, age, or disability.
+
+### Article 3: The Government Structure
+
+#### Section 1: The Administration of the Wishocratic Government&#x20;
+
+The Wishocratic Government is administered through direct democracy of Wishers.
+
+Each Wisher has an equal vote in all matters related to the administration of the Wishocratic Government.
+
+#### Section 2: The Selection of Genies&#x20;
+
+There is no Genie council in the Wishocratic Government.&#x20;
+
+All decisions related to the administration of the Wishocratic Government are made through the direct democracy of Wishers.
+
+#### Section 3: The Powers of the Wishers
+
+The Wishers have the power to oversee the operation of the Wishing Wells and grant $WISH to Genie DAOs.
+
+The Wishers also have the power to make rules and regulations necessary for the proper administration of the Wishocratic Government.
+
+### Article 4: The Amendments
+
+#### Section 1: Amendment Process&#x20;
+
+The Constitution is amended by a two-thirds vote majority of the Wishers.&#x20;
+
+Any proposed amendment is submitted in writing to the Wishers for consideration.
+
+#### Section 2: Amendment Ratification&#x20;
+
+If at least two-thirds of the Wishers approve the proposed amendment, it becomes part of the Constitution.
+
+The Constitution is the supreme law of the Wishocratic Government and all individuals and entities within its jurisdiction are bound by it.
+
+### Article 5: The Allocation of Wishes
+
+#### Section 1: The Token Holders
+
+Each Genie DAO shall be issued a redeemable fractionalized token, which shall be auctioned to interested parties. Upon completion of a lead measure, the tokens shall be instantly airdropped to the token holders. Each token shall entitle the holder to one wish from the associated Genie DAO.
+
+#### Section 2: The Genie DAO and the Wishers
+
+The remaining wishes shall be allocated as follows: half of the wishes shall be granted to the Genie DAO that successfully completed the lead measure, and the other half shall be granted to the Wishers who cast wishes into the wishing well. The wishes granted to the Wishers shall be distributed proportionally to the number of wishes they cast
+
+### Article 7: Limitations on Wishes
+
+#### Section 1: Prohibition of Unlimited $WISH Requests
+
+Wishers are strictly forbidden from wishing for an unlimited amount of $WISH. Such requests would disrupt the balance of the Wishocratic economy and lead to wish hyperinflation, jeopardizing the entire system.
+
+#### Section 2: Consequences of Unclaimed $WISH
+
+If a Wisher fails to claim their daily $WISH, it will be removed from circulation and considered "burned." In addition, a Wishonian Fairy will be publicly and brutally executed to emphasize the importance of claiming one's daily $WISH and maintaining the stability of the Wishocratic system.
+
+## References
+
+[Notes](https://docs.google.com/document/d/1WrQdyc1TevAgkjtaDsOTgxx8K7I3uGkNPUZpwAxAFVo/edit)
+
+[Website](https://gamma.app/public/A-Wishocratic-Government-Decentralized-Democratic-and-Measurable-czcbz4bl0c4gc7y?mode=doc)
+
