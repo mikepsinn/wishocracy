@@ -7,6 +7,7 @@ import HomepageFeatures from '@site/src/components/HomepageFeatures';
 
 import styles from './index.module.css';
 import HowItWorks from '../components/HowItWorks'
+import SearchBarWrapper from "../theme/SearchBar";
 
 function HomepageHeader() {
   const {siteConfig} = useDocusaurusContext();
