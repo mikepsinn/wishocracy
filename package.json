@@ -1,0 +1,25 @@
+{
+  "name": "wishocracy",
+  "version": "0.1.0",
+  "private": true,
+  "description": "RAPPA: Randomized Aggregated Pairwise Preference Allocation",
+  "author": "Mike P. Sinn <m@thinkbynumbers.org>",
+  "license": "MIT",
+  "workspaces": ["packages/*"],
+  "scripts": {
+    "build": "pnpm -r build",
+    "test": "pnpm -r test",
+    "lint": "eslint 'packages/*/src/**/*.ts'",
+    "typecheck": "pnpm -r exec tsc --noEmit",
+    "check": "pnpm typecheck && pnpm lint && pnpm test",
+    "db:generate": "pnpm --filter @wishocracy/db prisma generate",
+    "db:migrate": "pnpm --filter @wishocracy/db prisma migrate dev",
+    "db:push": "pnpm --filter @wishocracy/db prisma db push"
+  },
+  "devDependencies": {
+    "eslint": "^9.0.0",
+    "typescript": "^5.3.3",
+    "typescript-eslint": "^8.0.0"
+  },
+  "packageManager": "pnpm@8.14.0"
+}
