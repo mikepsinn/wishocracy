@@ -1,177 +1,135 @@
----
-description: Using collective intelligence to maximize the production of public goods given finite resources.
----
-# 💫 Wishocracy 💫
+# Wishocracy
 
-## Problems Wishocracy Solves
+<p align="center">
+  <img src="./packages/web/public/assets/wishocracy/wishocracy-og-1200x630.png" alt="Wishocracy" width="900" />
+</p>
 
-1. **Optimal Allocation of Finite Resources** - Simple Direct Democracy does not prioritize resource allocation as effectively as being forced to prioritize spending of a given budget. There are an infinite number of good ideas that could all pass an up-down vote, but the world has limited resources.  Wishocracy forces its Citizens to prioritize the most important ones.
-2. **Misaligned Interests** - The interests of representatives in a Representative Democracy do not match the interests of all Citizens.  For instance, in the US, one of the most democratic representative governments, 80% to 90% of citizens disapprove of the way Congress allocates resources.  One [study](https://act.represent.us/sign/problempoll-fba/) showed that "The preferences of the average American appear to have only a minuscule, near-zero, statistically non-significant impact upon public policy." The interests of a Wishocratic government are identical to the interests of its citizens.
-3. **Duplication of Effort** - Multiple organizations often have similar needs. 
-For instance, there are many projects working to enable people to collect, analyze and share their health data. 
-Instead of sharing the cost burden for building the required features,
-   many are all building the exact same features in private code bases. 
-Wishocracy pools shared resources to minimize waste and accelerate progress.
-4. **AI Safety** - Artificial Intelligence holds great promise for humanity, including the potential to destroy it.
-   The commonly proposed solution is government regulation.  
-However, governments are also a form of artificial intelligence. 
-They are complex systems without a physical brain that process
-   and analyze large amounts of data to make decisions and take action.
-Studies have shown that these "GovGPTs" also have very little alignment with the interests of the average human.  
-Unlike ChatGPT,
-   they've already proven
-   that they have the capability and will to murder [up to a billion humans](https://www.nytimes.com/2003/07/06/books/chapters/what-every-person-should-know-about-war.html) throughout their history.
-   A global Wishocracy could serve as a perfectly human interest-aligned regulator of all AI systems.
-5. **Inadequate Knowledge of Representatives** - We've seen time and time again that those thought to be the greatest experts can make disastrous policies. The most recent examples include:
-   - central bankers [destroying currencies](https://en.wikipedia.org/wiki/Hyperinflation) and harming economies, 
-   - foreign affairs experts conducting military attacks that [decrease national security](https://www.gale.com/terrorism), 
-   - drug policy experts are criminalizing the prescription of safer painkillers
-     [leading to an epidemic of Fentanyl overdoses](https://www.theguardian.com/commentisfree/2017/aug/29/war-on-drugs-fueled-fentanyl-crisis)
-and on and on. 
-The [Wisdom of Crowds](https://en.wikipedia.org/wiki/The\_Wisdom\_of\_Crowds) has many examples
-     proving that the combined knowledge of many people is likely
-     to produce better decisions than even the smartest experts.
+**Wishocracy turns governance into a budget interface.**
 
-6. **Attention Time Wasted on Personalities Instead of Issues** - On average,
-   a person spends approximately 5-10 minutes per day consuming news specifically related to political issues. 
-The majority of these minutes consist of news related to politicians’
-   personal lives and controversies rather than substantive policy discussions.
-This leads to an inadequate understanding of the costs and benefits of the policies that actually impact society. 
-The terrible result is that, in representative democracies,
-   political decisions are based on tribal loyalties to a far greater extent than their value to humanity. 
-In a Wishocracy, there would be no need for politicians.
-Thus, 100% of this information consumption could be devoted to policy, leading to a more informed population.
+Wishocracy is a working coordination app for public priorities. Instead of asking people to rank a giant list of issues or cast another yes/no vote, it asks them to make one tradeoff at a time, converts those judgments into a budget allocation, and aggregates them into a collective preference signal.
 
-## How it Works
+Built for **PL_Genesis: Frontiers of Collaboration**, Wishocracy is a concrete answer to the hackathon's focus on coordination, governance, and shared intelligence.
 
-### $WISHes
+[Use the live app](https://wishocracy.org) | [Read the paper](https://wishocracy.warondisease.org/) | [Research DOI](https://doi.org/10.5281/zenodo.18523096) | [Run it locally](#run-locally)
 
-Every member of a Wishocratic DAO receives a universal basic income of 2,500 $WISHes per month.
+## Why This Matters
 
-### Wishing Wells
+Representative democracy has a principal-agent problem: elected officials face incentives that often diverge from citizen welfare, while most democratic interfaces are weak at expressing tradeoffs and preference intensity.
 
-If a Citizen has a wish, they:
-1. create a Wishing Well (similar to a feature request) which describes their Wish, or search for an existing Wishing Well for the same Wish.
+Polls tell you what people like. Elections tell you who they picked. Neither tells you what they would actually fund more, or fund less, when resources are limited.
 
-Once they find or create their Wishing Well, they can throw their $WISH(es) in the Wishing Well
-(known as staking in DeFi).
+Wishocracy does.
 
-## The Wishocratic Constitution
+That makes it useful for:
 
-### Article 1: Wishocratic Government
+- citizens who want to see what they would actually prioritize
+- researchers measuring collective priorities
+- advocates testing whether a message changes allocation, not just approval
+- communities, DAOs, and public-interest organizations that need a better coordination mechanism
 
-#### Section 1: The Establishment of the Wishocratic Government
+## How It Works
 
-It is established as a new form of government in which every individual (Wisher) is granted one $WISH per day.
+1. A participant chooses which budget categories they want considered.
+2. Wishocracy presents pairwise tradeoffs such as allocating `$100` between two priorities.
+3. Those responses are aggregated into a percentage allocation across the full set.
+4. The participant sees their own result alongside the community average and current government spending.
+5. The result can be saved, revisited, and shared through a referral link.
 
-#### Section 2: The Wishing Wells
+This is not just a ranking tool. It is a budget allocation interface that captures both direction and intensity.
 
-For each new $WISH submitted, a Wishing Well is created.
+## Why Pairwise Works Better
 
-The Wishing Well is the central repository for all $WISH associated with that particular Wish.
+The core RAPPA insight is that humans are much better at making one constrained comparison at a time than producing a clean ranking across a long list.
 
-If multiple people have the same Wish, they may contribute their $WISH to the same Wishing Well.
+That gives Wishocracy three practical advantages:
 
-#### Section 3: Genie DAOs
+- lower cognitive load than ranking many priorities at once
+- stronger signal because it captures intensity, not just order
+- tractable participation because the paper targets roughly `10-30` comparisons in about `5-10 minutes`
 
-Genie DAOs may consist of any combination of businesses, nonprofits, governments, or individuals.
+The research framing also gives the project credible precedent: participatory budgeting in **Porto Alegre**, digital democracy work in **Taiwan**, and aggregation research built on pairwise comparison methods.
 
-Genie DAOs may apply to receive $WISH from a specific Wishing Well to fulfill a Wish.
+## Why This Fits PL_Genesis
 
-Genie DAOs must include both a GPI Lead Measure and a GPI Lag Measure in their proposals.
+PL_Genesis is about building tools for coordination, governance, and shared intelligence. Wishocracy fits that directly:
 
-#### Section 4: Granting of Wishes
+- it turns subjective public values into a structured, aggregatable signal
+- it lets many people contribute small judgments that add up to a collective budget
+- it makes governance legible by showing `YOU`, `AVG`, and `GOVT` side by side
+- it is already a working product, not a concept deck
+- it creates a path from collective intelligence to accountability, not just visualization
 
-If a majority of Wishers vote that a particular Genie DAO has fulfilled a Wish, those fulfilling the given $WISH grant all $WISH in the Wishing Well.
+Given the hackathon's two main competition tracks, Wishocracy is a strong fit for **Existing Code**: the core system already exists, and this repo is focused on shipping meaningful product improvements that make the experience usable now.
 
-#### Section 5: Lead and Lag Measures
+## What People Can Do Right Now
 
-A Lead Measure is a predictive and proactive indicator of future performance
-that the performer can influence or control. 
-It represents the activities and strategies that can be implemented to achieve the desired outcome
-and is measured to determine progress toward the goal.
+The current app already supports a full end-to-end loop:
 
-A Lag Measure is a retrospective and reactive indicator of past performance,
-representing the outcomes that have already occurred and cannot be influenced or controlled by the performer.
-These measures are useful for evaluating whether the end goal has been achieved.
+1. Start without creating an account.
+2. Choose which of the 10 budget areas you want included.
+3. Compare priorities two at a time using explicit budget tradeoffs.
+4. See your own allocation across the selected categories.
+5. Compare your result against the community average and current government spending.
+6. Sign in to save your allocations and sync guest progress.
+7. Share a referral link so other people can run the same flow.
 
-The formula for both the GPI Lead Measure and GPI Lag Measure, as well as the method of collecting the data,
-will be concretely defined before the approval of a Genie DAO contract.
+The current category set includes examples like pragmatic clinical trials, addiction treatment, early childhood education, drug war enforcement, prison operations, and military systems.
 
-The current price of the $WISH tokens after tax and the number of wishes in the wishing well would dictate to which degree the lag measure would affect society.
+## Why Judges Should Care
 
-### Article 2: The Individual Rights and Freedoms
+This project is immediately legible as a coordination primitive:
 
-#### Section 1: The Right to Wishes
+- it measures what people would actually allocate under constraint
+- it produces outputs that can be compared, debated, and acted on
+- it can scale from a single issue set to broader public budgeting problems
+- it has a clear path from prototype to public accountability infrastructure
 
-Every individual has the right to submit one $WISH per day to a specific Wishing Well.
+The paper's proposed rollout is especially strong:
 
-#### Section 2: Non-discrimination
+- **Phase 1:** publish a public **Preference Gap Report** showing the difference between citizen allocations and actual government allocations
+- **Phase 2:** publish **Citizen Alignment Scores** showing which politicians actually vote in line with those preferences
 
-No $WISH is allowed to discriminate against race, color, religion, national origin, gender, sexual orientation, age, or disability.
+That gives Wishocracy a credible roadmap from demo to institutionally relevant system.
 
-### Article 3: The Government Structure
+## Product Thesis
 
-#### Section 1: The Administration of the Wishocratic Government
+Wishocracy is trying to collect better budget signals.
 
-The Wishocratic Government is administered through direct democracy of Wishers.
+The goal is to make tradeoffs visible, comparable, and aggregatable so governance can be based on what people would actually allocate under constraint, not just what they endorse in the abstract.
 
-Each Wisher has an equal vote in all matters related to the administration of the Wishocratic Government.
+## Repository
 
-#### Section 2: The Selection of Genies
+- `packages/web`: Next.js app powering the live Wishocracy experience
+- `packages/rappa`: RAPPA calculation engine for pairwise aggregation and scoring
+- `packages/db`: Prisma schema and shared database package
 
-There is no Genie council in the Wishocratic Government.
+## Run Locally
 
-All decisions related to the administration of the Wishocratic Government are made through the direct democracy of Wishers.
+Requirements:
 
-#### Section 3: The Powers of the Wishers
+- `pnpm`
+- Postgres
+- environment variables based on `packages/web/.env.example`
 
-The Wishers have the power to oversee the operation of the Wishing Wells and grant $WISH to Genie DAOs.
+From the repo root:
 
-The Wishers also have the power
-to make the rules and regulations necessary for the proper administration of the Wishocratic Government.
+```bash
+pnpm install
+pnpm --filter @wishocracy/web db:up
+pnpm --filter @wishocracy/web dev
+```
 
-### Article 4: The Amendments
+Useful commands:
 
-#### Section 1: Amendment Process
+```bash
+pnpm --filter @wishocracy/web typecheck
+pnpm --filter @wishocracy/web test
+pnpm --filter @wishocracy/web db:migrate
+pnpm --filter @wishocracy/web db:studio
+```
 
-The Constitution is amended by a two-thirds vote majority of the Wishers.
+## Contact
 
-Any proposed amendment is submitted in writing to the Wishers for consideration.
-
-#### Section 2: Amendment Ratification
-
-If at least two-thirds of the Wishers approve the proposed amendment, it becomes part of the Constitution.
-
-The Constitution is the supreme law of the Wishocratic Government,
-and all individuals and entities within its jurisdiction are bound by it.
-
-### Article 5: The Allocation of Wishes
-
-#### Section 1: The Token Holders
-
-Each Genie DAO shall be issued a redeemable fractionalized token, which shall be auctioned to interested parties. Upon completion of a lead measure, the tokens shall be instantly airdropped to the token holders. Each token shall entitle the holder to one wish from the associated Genie DAO.
-
-#### Section 2: The Genie DAO and the Wishers
-
-The remaining wishes shall be allocated as follows: half of the wishes shall be granted to the Genie DAO that successfully completed the lead measure, and the other half shall be granted to the Wishers who cast wishes into the wishing well. The wishes granted to the Wishers shall be distributed proportionally to the number of wishes they cast
-
-### Article 7: Limitations on Wishes
-
-#### Section 1: Prohibition of Unlimited $WISH Requests
-
-Wishers are strictly forbidden from wishing for an unlimited amount of $WISH. Such requests would disrupt the balance of the Wishocratic economy and lead to wish hyperinflation, jeopardizing the entire system.
-
-#### Section 2: Consequences of Unclaimed $WISH
-
-If a Wisher fails to claim their daily $WISH, it will be removed from circulation and considered "burned." In addition, a Wishonian Fairy will be publicly and brutally executed to emphasize the importance of claiming one's daily $WISH and maintaining the stability of the Wishocratic system.
-
-## References
-
-[Notes](https://docs.google.com/document/d/1WrQdyc1TevAgkjtaDsOTgxx8K7I3uGkNPUZpwAxAFVo/edit)
-
-[Website](https://gamma.app/public/A-Wishocratic-Government-Decentralized-Democratic-and-Measurable-czcbz4bl0c4gc7y?mode=doc)
-
-
-
-
+- App: `https://wishocracy.org`
+- Paper: `https://wishocracy.warondisease.org/`
+- Email: `hello@wishocracy.org`
