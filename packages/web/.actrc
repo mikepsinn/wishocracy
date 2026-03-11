@@ -1,0 +1,14 @@
+# act configuration file
+# https://github.com/nektos/act
+
+# Use medium runner for better compatibility
+-P ubuntu-latest=catthehacker/ubuntu:act-20.04
+
+# Reuse containers between runs (faster)
+--reuse
+
+# Use BuildKit for better caching
+--use-new-action-cache
+
+# Default workflow file
+-W .github/workflows/test.yml

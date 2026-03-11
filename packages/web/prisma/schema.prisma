@@ -1,0 +1,1147 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id                   String           @id @default(cuid())
+  email                String           @unique
+  name                 String?
+  username             String?          @unique
+  image                String?
+  password             String?
+  referralCode         String           @unique @default(cuid())
+  emailVerified        DateTime?
+  address              String?
+  addressVerified      Boolean          @default(false)
+  bio                  String?
+  country              String?
+  emailNotifications   Boolean          @default(true)
+  governmentIdVerified Boolean          @default(false)
+  isPublic             Boolean          @default(false)
+  location             String?
+  organizationId       String?
+  phoneNumber          String?          @unique
+  phoneVerified        Boolean          @default(false)
+  referralAlerts       Boolean          @default(true)
+  verifiedAt           DateTime?
+  weeklyDigest         Boolean          @default(true)
+  newsletterSubscribed Boolean          @default(true)
+  isAdmin              Boolean          @default(false)
+  website              String?
+  headline             String?
+  coverImage           String?
+  createdAt            DateTime         @default(now())
+  deletedAt            DateTime?
+  updatedAt            DateTime         @updatedAt
+  accounts             Account[]
+  activities           Activity[]
+  articles             Article[]        @relation("ArticleAuthor")
+  badges               Badge[]
+  moderatedComments    Comment[]        @relation("CommentModerator")
+  comments             Comment[]
+  donations            Donation[]
+  emailLogs                EmailLog[]
+  notificationPreferences  NotificationPreference[]
+  notifications            Notification[]
+  moderatedReports     Report[]         @relation("ReportModerator")
+  reports              Report[]
+  sessions             Session[]
+  socialAccounts       SocialAccount[]
+  createdSurveys       Survey[]         @relation("SurveyCreator")
+  surveyResponses      SurveyResponse[] @relation("SurveyRespondent")
+  organization         Organization?    @relation("OrganizationMembers", fields: [organizationId], references: [id])
+  createdOrganizations Organization[]   @relation("OrganizationCreator")
+  referrals            Vote[]           @relation("UserReferrals")
+  votes                Vote?            @relation("UserVotes")
+  wishocraticAllocations WishocraticAllocation[] @relation("UserWishocraticAllocations")
+  wishocraticCategorySelections WishocraticCategorySelection[] @relation("UserWishocraticCategorySelections")
+  createdCampaigns       Campaign[]              @relation("CampaignCreator")
+  campaignPledges        CampaignPledge[]
+  campaignTeamMembers    CampaignTeamMember[]
+  campaignUpdates        CampaignUpdate[]
+  skills               UserSkill[]
+  links                UserLink[]
+
+  @@index([email])
+  @@index([isPublic])
+  @@index([organizationId])
+  @@index([referralCode])
+  @@index([country])
+  @@index([isAdmin])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+model Account {
+  id                String   @id @default(cuid())
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique
+  userId       String
+  expires      DateTime
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([createdAt])
+}
+
+model VerificationToken {
+  identifier String
+  token      String   @unique
+  expires    DateTime
+
+  @@unique([identifier, token])
+}
+
+model Vote {
+  id                        String         @id @default(cuid())
+  answer                    VoteAnswer
+  militaryAllocationPercent Int?           // Percentage user thinks should go to military (0-100)
+  userId                    String?        @unique
+  referredByUserId          String?
+  organizationId            String?        // Which organization's survey page generated this vote
+  ipAddress                 String?
+  fingerprint               String?
+  createdAt                 DateTime       @default(now())
+  updatedAt                 DateTime       @updatedAt
+  referrer                  User?          @relation("UserReferrals", fields: [referredByUserId], references: [id])
+  user                      User?          @relation("UserVotes", fields: [userId], references: [id], onDelete: Cascade)
+  organization              Organization?  @relation("OrganizationVotes", fields: [organizationId], references: [id])
+
+  @@index([userId])
+  @@index([referredByUserId])
+  @@index([organizationId])
+  @@index([createdAt])
+  @@index([ipAddress])
+  @@index([fingerprint])
+}
+
+model Organization {
+  id           String      @id @default(cuid())
+  name         String
+  description  String
+  type         OrgType
+  category     OrgCategory?
+  website      String?
+  logo         String?
+  contactEmail String
+  slug         String?     @unique
+  status       OrgStatus   @default(PENDING)
+  creatorId    String?     // Who created/owns this organization
+  createdAt    DateTime    @default(now())
+  updatedAt    DateTime    @updatedAt
+  deletedAt    DateTime?
+  creator      User?       @relation("OrganizationCreator", fields: [creatorId], references: [id])
+  members      User[]      @relation("OrganizationMembers")
+  votes        Vote[]      @relation("OrganizationVotes")
+  campaigns    Campaign[]
+
+  @@index([type])
+  @@index([status])
+  @@index([category])
+  @@index([slug])
+  @@index([creatorId])
+  @@index([deletedAt])
+}
+
+model Badge {
+  id        String    @id @default(cuid())
+  userId    String
+  type      BadgeType
+  earnedAt  DateTime  @default(now())
+  createdAt DateTime  @default(now())
+  updatedAt DateTime  @updatedAt
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type])
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SocialAccount {
+  id            String         @id @default(cuid())
+  userId        String
+  platform      SocialPlatform
+  accountId     String
+  username      String?
+  walletAddress String?        @unique
+  verifiedAt    DateTime       @default(now())
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  user          User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, platform])
+  @@index([userId])
+  @@index([walletAddress])
+  @@index([createdAt])
+}
+
+model Donation {
+  id              String            @id @default(cuid())
+  amount          Int
+  createdAt       DateTime          @default(now())
+  email           String?
+  frequency       DonationFrequency
+  name            String?
+  stripePaymentId String?           @unique
+  userId          String?
+  status          DonationStatus    @default(PENDING)
+  updatedAt       DateTime          @updatedAt
+  user            User?             @relation(fields: [userId], references: [id])
+  emailLogs       EmailLog[]
+
+  @@index([userId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Activity {
+  id          String       @id @default(cuid())
+  userId      String
+  type        ActivityType
+  description String
+  metadata    String?
+  createdAt   DateTime     @default(now())
+  updatedAt   DateTime     @updatedAt
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model NewsletterSubscriber {
+  id             String              @id @default(cuid())
+  email          String              @unique
+  name           String?
+  isActive       Boolean             @default(true)
+  frequency      NewsletterFrequency @default(WEEKLY)
+  source         String?
+  subscribedAt   DateTime            @default(now())
+  unsubscribedAt DateTime?
+  createdAt      DateTime            @default(now())
+  updatedAt      DateTime            @updatedAt
+
+  @@index([email])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+model ContactSubmission {
+  id        String           @id @default(cuid())
+  name      String
+  email     String
+  subject   String?
+  message   String
+  type      ContactType      @default(GENERAL)
+  status    SubmissionStatus @default(NEW)
+  notes     String?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+
+  @@index([email])
+  @@index([status])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Survey {
+  id              String           @id @default(cuid())
+  title           String
+  description     String?
+  type            SurveyType       @default(SURVEY)
+  status          SurveyStatus     @default(DRAFT)
+  startDate       DateTime?
+  endDate         DateTime?
+  isPublic        Boolean          @default(true)
+  requiresAuth    Boolean          @default(false)
+  settings        String?
+  maxResponses    Int?
+  responseCount   Int              @default(0)
+  isQuiz          Boolean          @default(false)
+  passingScore    Int?
+  createdByUserId String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  deletedAt       DateTime?
+  questions       Question[]
+  sections        Section[]
+  createdBy       User?            @relation("SurveyCreator", fields: [createdByUserId], references: [id])
+  responses       SurveyResponse[]
+
+  @@index([status])
+  @@index([type])
+  @@index([createdByUserId])
+  @@index([startDate])
+  @@index([endDate])
+  @@index([deletedAt])
+}
+
+model Section {
+  id               String     @id @default(cuid())
+  surveyId         String
+  title            String
+  description      String?
+  order            Int        @default(0)
+  conditionalLogic String?
+  createdAt        DateTime   @default(now())
+  updatedAt        DateTime   @updatedAt
+  questions        Question[]
+  survey           Survey     @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+
+  @@index([surveyId])
+  @@index([order])
+  @@index([createdAt])
+}
+
+model Question {
+  id               String             @id @default(cuid())
+  surveyId         String
+  sectionId        String?
+  text             String
+  description      String?
+  type             QuestionType
+  order            Int                @default(0)
+  isRequired       Boolean            @default(false)
+  options          String?
+  validation       String?
+  minSelections    Int?
+  maxSelections    Int?
+  scaleMin         Int?
+  scaleMax         Int?
+  scaleMinLabel    String?
+  scaleMaxLabel    String?
+  conditionalLogic String?
+  correctAnswer    String?
+  points           Int?               @default(1)
+  explanation      String?
+  createdAt        DateTime           @default(now())
+  updatedAt        DateTime           @updatedAt
+  section          Section?           @relation(fields: [sectionId], references: [id])
+  survey           Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  responses        QuestionResponse[]
+
+  @@index([surveyId])
+  @@index([sectionId])
+  @@index([order])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model SurveyResponse {
+  id               String             @id @default(cuid())
+  surveyId         String
+  userId           String?
+  referredByUserId String?
+  email            String?
+  ipAddress        String?
+  fingerprint      String?
+  isComplete       Boolean            @default(false)
+  canEdit          Boolean            @default(true)
+  score            Int?
+  percentage       Float?
+  passed           Boolean?
+  startedAt        DateTime           @default(now())
+  completedAt      DateTime?
+  updatedAt        DateTime           @updatedAt
+  answers          QuestionResponse[]
+  survey           Survey             @relation(fields: [surveyId], references: [id], onDelete: Cascade)
+  user             User?              @relation("SurveyRespondent", fields: [userId], references: [id])
+
+  @@unique([surveyId, userId])
+  @@index([surveyId])
+  @@index([userId])
+  @@index([referredByUserId])
+  @@index([isComplete])
+  @@index([completedAt])
+  @@index([email])
+  @@index([ipAddress])
+  @@index([fingerprint])
+}
+
+model QuestionResponse {
+  id               String         @id @default(cuid())
+  questionId       String
+  surveyResponseId String
+  answer           String
+  isCorrect        Boolean?
+  pointsEarned     Int?
+  createdAt        DateTime       @default(now())
+  updatedAt        DateTime       @updatedAt
+  question         Question       @relation(fields: [questionId], references: [id], onDelete: Cascade)
+  surveyResponse   SurveyResponse @relation(fields: [surveyResponseId], references: [id], onDelete: Cascade)
+
+  @@index([questionId])
+  @@index([surveyResponseId])
+}
+
+model Notification {
+  id        String           @id @default(cuid())
+  userId    String
+  type      NotificationType
+  title     String
+  message   String
+  link      String?
+  isRead    Boolean          @default(false)
+  readAt    DateTime?
+  createdAt DateTime         @default(now())
+  updatedAt DateTime         @updatedAt
+  user      User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([isRead])
+  @@index([type])
+  @@index([createdAt])
+}
+
+model Comment {
+  id               String          @id @default(cuid())
+  userId           String
+  content          String
+  commentableType  CommentableType
+  commentableId    String
+  parentId         String?
+  isEdited         Boolean         @default(false)
+  editedAt         DateTime?
+  isFlagged        Boolean         @default(false)
+  isHidden         Boolean         @default(false)
+  moderatedBy      String?
+  moderatedAt      DateTime?
+  moderationReason String?
+  createdAt        DateTime        @default(now())
+  updatedAt        DateTime        @updatedAt
+  deletedAt        DateTime?
+  moderator        User?           @relation("CommentModerator", fields: [moderatedBy], references: [id])
+  parent           Comment?        @relation("CommentReplies", fields: [parentId], references: [id], onDelete: Cascade)
+  replies          Comment[]       @relation("CommentReplies")
+  user             User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  reports          Report[]
+
+  @@index([userId])
+  @@index([commentableType, commentableId])
+  @@index([parentId])
+  @@index([isFlagged])
+  @@index([isHidden])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+model Article {
+  id              String        @id @default(cuid())
+  authorId        String
+  title           String
+  slug            String        @unique
+  excerpt         String?
+  content         String
+  coverImage      String?
+  status          ArticleStatus @default(DRAFT)
+  metaTitle       String?
+  metaDescription String?
+  viewCount       Int           @default(0)
+  commentCount    Int           @default(0)
+  publishedAt     DateTime?
+  createdAt       DateTime      @default(now())
+  updatedAt       DateTime      @updatedAt
+  deletedAt       DateTime?
+  author          User          @relation("ArticleAuthor", fields: [authorId], references: [id], onDelete: Cascade)
+  tags            ArticleTag[]
+
+  @@index([authorId])
+  @@index([slug])
+  @@index([status])
+  @@index([publishedAt])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+model Tag {
+  id        String       @id @default(cuid())
+  name      String       @unique
+  slug      String       @unique
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  articles  ArticleTag[]
+
+  @@index([slug])
+  @@index([createdAt])
+}
+
+model ArticleTag {
+  articleId String
+  tagId     String
+  createdAt DateTime @default(now())
+  article   Article  @relation(fields: [articleId], references: [id], onDelete: Cascade)
+  tag       Tag      @relation(fields: [tagId], references: [id], onDelete: Cascade)
+
+  @@id([articleId, tagId])
+  @@index([articleId])
+  @@index([tagId])
+  @@index([createdAt])
+}
+
+model Report {
+  id             String         @id @default(cuid())
+  reporterId     String
+  reportableType ReportableType
+  reportableId   String
+  commentId      String?
+  reason         ReportReason
+  details        String?
+  status         ReportStatus   @default(PENDING)
+  moderatedBy    String?
+  moderatedAt    DateTime?
+  resolution     String?
+  createdAt      DateTime       @default(now())
+  updatedAt      DateTime       @updatedAt
+  comment        Comment?       @relation(fields: [commentId], references: [id], onDelete: Cascade)
+  moderator      User?          @relation("ReportModerator", fields: [moderatedBy], references: [id])
+  reporter       User           @relation(fields: [reporterId], references: [id], onDelete: Cascade)
+
+  @@index([reporterId])
+  @@index([reportableType, reportableId])
+  @@index([commentId])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model EmailLog {
+  id            String      @id @default(cuid())
+  to            String
+  userId        String?
+  type          EmailType
+  subject       String
+  template      String?
+  donationId    String?
+  resendEmailId String?     @unique
+  status        EmailStatus @default(PENDING)
+  deliveredAt   DateTime?
+  openedAt      DateTime?
+  clickedAt     DateTime?
+  bouncedAt     DateTime?
+  error         String?
+  metadata      String?
+  sentAt        DateTime    @default(now())
+  createdAt     DateTime    @default(now())
+  updatedAt     DateTime    @updatedAt
+  donation      Donation?   @relation(fields: [donationId], references: [id])
+  user          User?       @relation(fields: [userId], references: [id])
+
+  @@unique([donationId, type])
+  @@index([to])
+  @@index([userId])
+  @@index([donationId])
+  @@index([type])
+  @@index([status])
+  @@index([resendEmailId])
+  @@index([sentAt])
+}
+
+// User's notification preferences across different channels
+// Add new types to NotificationType enum, add new channels to NotificationChannel enum
+// No schema migrations needed for new notification types!
+model NotificationPreference {
+  id        String              @id @default(cuid())
+  userId    String
+  type      NotificationType
+  channel   NotificationChannel
+  enabled   Boolean             @default(true) // true = user wants to receive this notification
+  createdAt DateTime            @default(now())
+  updatedAt DateTime            @updatedAt
+  user      User                @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, type, channel]) // One preference per user per type per channel
+  @@index([userId])
+  @@index([type])
+  @@index([channel])
+}
+
+// Crowdfunding campaign for user projects
+// Supports: donations, rewards, equity, pre-orders
+// Full compliance tracking, multi-currency, team management
+model Campaign {
+  id                      String               @id @default(cuid())
+  slug                    String               @unique
+  title                   String
+  description             String // Short description (1-2 sentences)
+  story                   String // Full campaign story (rich text/markdown)
+  type                    CampaignType
+  creatorId               String
+  organizationId          String? // Optional: organization-run campaigns
+  goalAmount              Int // Amount in cents
+  currentAmount           Int                  @default(0) // Amount raised in cents
+  currency                String               @default("USD") // ISO 4217 currency code
+  startDate               DateTime             @default(now())
+  endDate                 DateTime? // null = no deadline (flexible funding)
+  status                  CampaignStatus       @default(DRAFT)
+  videoUrl                String? // YouTube/Vimeo embed
+  coverImageUrl           String?
+  images                  String? // JSON array of image URLs
+  category                String // e.g., "Medical Research", "Clinical Trial", "Patient Advocacy"
+  tags                    String? // JSON array of tags for discovery
+  viewCount               Int                  @default(0)
+  backerCount             Int                  @default(0)
+  featured                Boolean              @default(false) // Featured on homepage
+  trending                Boolean              @default(false) // Trending algorithm flag
+  refundPolicy            String // Required: clear refund terms
+  riskDisclosure          String // Required: SEC/legal disclosure of risks
+  processingFeePercentage Float                @default(5.0) // Platform fee (5% default)
+  complianceData          String? // JSON: regulatory requirements, accreditation checks
+  flexibleFunding         Boolean              @default(false) // true = keep funds even if goal not met
+  createdAt               DateTime             @default(now())
+  updatedAt               DateTime             @updatedAt
+  deletedAt               DateTime?
+  creator                 User                 @relation("CampaignCreator", fields: [creatorId], references: [id], onDelete: Cascade)
+  organization            Organization?        @relation(fields: [organizationId], references: [id])
+  pledges                 CampaignPledge[]
+  rewards                 CampaignReward[]
+  stretchGoals            CampaignStretchGoal[]
+  teamMembers             CampaignTeamMember[]
+  updates                 CampaignUpdate[]
+
+  @@index([creatorId])
+  @@index([organizationId])
+  @@index([slug])
+  @@index([status])
+  @@index([type])
+  @@index([category])
+  @@index([featured])
+  @@index([trending])
+  @@index([endDate])
+  @@index([createdAt])
+  @@index([deletedAt])
+}
+
+// Reward tiers for REWARD-type campaigns
+// Tracks inventory, delivery estimates, shipping
+model CampaignReward {
+  id                String           @id @default(cuid())
+  campaignId        String
+  title             String
+  description       String
+  amount            Int // Amount in cents
+  currency          String           @default("USD")
+  estimatedDelivery DateTime? // When backers can expect delivery
+  shippingEnabled   Boolean          @default(true) // false for digital rewards
+  shippingFee       Int              @default(0) // Additional shipping cost in cents
+  shippingRegions   String? // JSON array of countries/regions
+  maxBackers        Int? // null = unlimited
+  currentBackers    Int              @default(0)
+  unlimited         Boolean          @default(false) // true = no max limit
+  isActive          Boolean          @default(true) // Deactivate sold-out rewards
+  digital           Boolean          @default(false) // Digital rewards (no shipping)
+  createdAt         DateTime         @default(now())
+  updatedAt         DateTime         @updatedAt
+  campaign          Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  pledges           CampaignPledge[]
+
+  @@index([campaignId])
+  @@index([isActive])
+  @@index([createdAt])
+}
+
+// User pledge/contribution to campaign
+// Tracks payment, fulfillment, shipping
+model CampaignPledge {
+  id                      String            @id @default(cuid())
+  campaignId              String
+  userId                  String
+  rewardId                String? // null for no-reward pledges (pure donations)
+  amount                  Int // Amount pledged in cents
+  currency                String            @default("USD")
+  paymentStatus           PaymentStatus     @default(PENDING)
+  stripePaymentIntentId   String? // Stripe payment ID
+  stripeSubscriptionId    String? // For recurring donations
+  shippingAddress         String? // JSON: address object
+  shippingStatus          ShippingStatus    @default(PENDING)
+  trackingNumber          String? // Shipping tracking number
+  deliveryDate            DateTime? // Actual delivery date
+  fulfillmentStatus       FulfillmentStatus @default(PENDING)
+  fulfillmentNotes        String? // Internal notes for fulfillment team
+  isRecurring             Boolean           @default(false) // Monthly recurring pledge
+  isAnonymous             Boolean           @default(false) // Hide backer name publicly
+  refundedAt              DateTime?
+  refundReason            String?
+  createdAt               DateTime          @default(now())
+  updatedAt               DateTime          @updatedAt
+  campaign                Campaign          @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  reward                  CampaignReward?   @relation(fields: [rewardId], references: [id])
+  user                    User              @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([userId])
+  @@index([rewardId])
+  @@index([paymentStatus])
+  @@index([fulfillmentStatus])
+  @@index([shippingStatus])
+  @@index([createdAt])
+}
+
+// Stretch goals/milestones for campaigns
+// Unlocked when funding reaches target amount
+model CampaignStretchGoal {
+  id           String    @id @default(cuid())
+  campaignId   String
+  title        String
+  description  String
+  targetAmount Int // Target amount in cents
+  currency     String    @default("USD")
+  achieved     Boolean   @default(false)
+  achievedAt   DateTime?
+  order        Int       @default(0) // Display order
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  campaign     Campaign  @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([achieved])
+  @@index([order])
+  @@index([createdAt])
+}
+
+// Team members/co-creators for campaigns
+// Role-based permissions for multi-creator projects
+model CampaignTeamMember {
+  id          String           @id @default(cuid())
+  campaignId  String
+  userId      String
+  role        TeamMemberRole
+  permissions String? // JSON: { canEdit: bool, canViewBackers: bool, canFulfill: bool, canWithdraw: bool }
+  createdAt   DateTime         @default(now())
+  updatedAt   DateTime         @updatedAt
+  campaign    Campaign         @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+  user        User             @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([campaignId, userId]) // One role per user per campaign
+  @@index([campaignId])
+  @@index([userId])
+  @@index([role])
+  @@index([createdAt])
+}
+
+// Campaign updates from creators
+// Can be public or backers-only
+model CampaignUpdate {
+  id         String   @id @default(cuid())
+  campaignId String
+  authorId   String // Team member who posted
+  title      String
+  content    String // Rich text/markdown
+  isPublic   Boolean  @default(true) // false = backers only
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  author     User     @relation(fields: [authorId], references: [id], onDelete: Cascade)
+  campaign   Campaign @relation(fields: [campaignId], references: [id], onDelete: Cascade)
+
+  @@index([campaignId])
+  @@index([authorId])
+  @@index([isPublic])
+  @@index([createdAt])
+}
+
+model WishocraticAllocation {
+  id          String   @id @default(cuid())
+  userId      String
+  categoryA   String
+  categoryB   String
+  allocationA Int
+  allocationB Int
+  createdAt   DateTime @default(now())
+  user        User     @relation("UserWishocraticAllocations", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryA, categoryB])
+  @@index([userId])
+  @@index([categoryA])
+  @@index([categoryB])
+  @@index([createdAt])
+}
+
+model WishocraticCategorySelection {
+  id         String   @id @default(cuid())
+  userId     String
+  categoryId String
+  selected   Boolean
+  createdAt  DateTime @default(now())
+  updatedAt  DateTime @updatedAt
+  user       User     @relation("UserWishocraticCategorySelections", fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, categoryId])
+  @@index([userId])
+  @@index([categoryId])
+  @@index([selected])
+}
+
+model Skill {
+  id        String      @id @default(cuid())
+  name      String      @unique
+  slug      String      @unique
+  category  String?
+  createdAt DateTime    @default(now())
+  users     UserSkill[]
+
+  @@index([slug])
+  @@index([category])
+  @@index([createdAt])
+}
+
+model UserSkill {
+  userId       String
+  skillId      String
+  endorsements Int      @default(0)
+  createdAt    DateTime @default(now())
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skill        Skill    @relation(fields: [skillId], references: [id], onDelete: Cascade)
+
+  @@id([userId, skillId])
+  @@index([userId])
+  @@index([skillId])
+  @@index([endorsements])
+  @@index([createdAt])
+}
+
+model UserLink {
+  id          String   @id @default(cuid())
+  userId      String
+  title       String
+  url         String
+  description String?
+  imageUrl    String?
+  order       Int      @default(0)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@index([order])
+  @@index([createdAt])
+}
+
+enum VoteAnswer {
+  YES
+  NO
+}
+
+enum OrgType {
+  DIVISION
+  INSTITUTE
+}
+
+enum OrgStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum OrgCategory {
+  UNIVERSITY
+  RESEARCH_CENTER
+  CLINICAL_NETWORK
+  HOSPITAL
+  NONPROFIT
+  DAO
+  ADVOCACY
+  REGISTRY
+  GOVERNMENT
+  BIOTECH
+  LAB
+  OTHER
+}
+
+enum BadgeType {
+  FIRST_RECRUIT
+  TEN_RECRUITS
+  FIFTY_RECRUITS
+  HUNDRED_RECRUITS
+  EARLY_ADOPTER
+  SOCIAL_WARRIOR
+  GENEROUS_DONOR
+  MONTHLY_SUPPORTER
+}
+
+enum SocialPlatform {
+  twitter
+  github
+  linkedin
+  facebook
+  instagram
+  tiktok
+  youtube
+  ethereum
+  solana
+  polygon
+  arbitrum
+  optimism
+  base
+  google
+  discord
+  telegram
+  worldcoin
+  reddit
+}
+
+enum DonationFrequency {
+  ONE_TIME
+  MONTHLY
+}
+
+enum DonationStatus {
+  PENDING
+  COMPLETED
+  FAILED
+  REFUNDED
+}
+
+enum ActivityType {
+  VOTED
+  RECRUITED
+  EARNED_BADGE
+  SHARED_LINK
+  DONATED
+  CONNECTED_SOCIAL
+  JOINED_ORG
+  PROFILE_UPDATED
+  CAMPAIGN_CREATED
+  CAMPAIGN_PLEDGED
+  CAMPAIGN_UPDATED
+  CAMPAIGN_COMPLETED
+  COMPLETED_WISHOCRATIC_ALLOCATION
+}
+
+enum NewsletterFrequency {
+  DAILY
+  WEEKLY
+  MONTHLY
+}
+
+enum ContactType {
+  GENERAL
+  VOLUNTEER
+  PARTNERSHIP
+  MEDIA
+  SUPPORT
+  ORGANIZATION_REGISTRATION
+}
+
+enum SubmissionStatus {
+  NEW
+  IN_PROGRESS
+  RESOLVED
+  ARCHIVED
+}
+
+enum SurveyType {
+  POLL
+  SURVEY
+  REFERENDUM
+  QUIZ
+  FEEDBACK
+}
+
+enum SurveyStatus {
+  DRAFT
+  ACTIVE
+  PAUSED
+  CLOSED
+  ARCHIVED
+}
+
+enum QuestionType {
+  TEXT
+  TEXTAREA
+  MULTIPLE_CHOICE
+  CHECKBOXES
+  DROPDOWN
+  LINEAR_SCALE
+  DATE
+  TIME
+  EMAIL
+  PHONE
+  NUMBER
+  URL
+  FILE_UPLOAD
+  YES_NO
+}
+
+enum NotificationType {
+  REFERRAL_SIGNUP
+  BADGE_EARNED
+  VOTE_MILESTONE
+  SURVEY_INVITE
+  COMMENT_REPLY
+  ARTICLE_PUBLISHED
+  ORGANIZATION_APPROVED
+  DONATION_RECEIVED
+  WEEKLY_DIGEST
+  SYSTEM_ANNOUNCEMENT
+  CAMPAIGN_PLEDGE_RECEIVED
+  CAMPAIGN_FUNDED
+  CAMPAIGN_UPDATE_POSTED
+  CAMPAIGN_REWARD_SHIPPED
+  CAMPAIGN_ENDING_SOON
+  PLEDGE_REFUNDED
+}
+
+enum NotificationChannel {
+  EMAIL
+  IN_APP
+  SMS   // Future: text message notifications
+  PUSH  // Future: mobile/web push notifications
+}
+
+enum CommentableType {
+  ORGANIZATION
+  ARTICLE
+  SURVEY
+  CAMPAIGN
+}
+
+enum ArticleStatus {
+  DRAFT
+  PUBLISHED
+  ARCHIVED
+}
+
+enum ReportableType {
+  COMMENT
+  ARTICLE
+  USER
+  ORGANIZATION
+}
+
+enum ReportReason {
+  SPAM
+  HARASSMENT
+  MISINFORMATION
+  INAPPROPRIATE
+  OFF_TOPIC
+  OTHER
+}
+
+enum ReportStatus {
+  PENDING
+  REVIEWING
+  RESOLVED
+  DISMISSED
+}
+
+enum EmailType {
+  // Authentication & Onboarding
+  EMAIL_VERIFICATION
+  WELCOME_IMPACT
+  SOCIAL_PROOF
+  PASSWORD_RESET
+
+  // Engagement & Growth
+  REFERRAL_MOTIVATION
+  REFERRAL_NOTIFICATION
+  ACTIVATION_NUDGE
+  WEEKLY_DIGEST
+  BADGE_EARNED
+
+  // Donations
+  DONATION_THANK_YOU
+  DONATION_RECEIPT
+
+  // Campaigns
+  CAMPAIGN_PLEDGE_CONFIRMATION
+  CAMPAIGN_PLEDGE_RECEIVED
+  CAMPAIGN_UPDATE_POSTED
+  CAMPAIGN_FUNDED
+  CAMPAIGN_ENDING_SOON
+  CAMPAIGN_COMPLETED
+  REWARD_SHIPPED
+
+  // Partners
+  PARTNER_APPROVAL
+  PARTNER_REJECTION
+
+  // System
+  SYSTEM_ANNOUNCEMENT
+
+  // Legacy (keeping for backwards compatibility)
+  WELCOME
+}
+
+enum EmailStatus {
+  PENDING
+  SENT
+  DELIVERED
+  OPENED
+  CLICKED
+  BOUNCED
+  FAILED
+}
+
+enum CampaignType {
+  DONATION // Pure donation, no rewards
+  REWARD // Kickstarter-style with reward tiers
+  EQUITY // Investment opportunity (requires compliance)
+  PRE_ORDER // Product pre-sale
+}
+
+enum CampaignStatus {
+  DRAFT // Not published yet
+  ACTIVE // Live and accepting pledges
+  FUNDED // Goal reached, campaign successful
+  CANCELLED // Creator cancelled
+  FAILED // Deadline passed without reaching goal
+  COMPLETED // Fulfilled and closed
+}
+
+enum PaymentStatus {
+  PENDING // Payment initiated but not confirmed
+  COMPLETED // Payment successful
+  FAILED // Payment failed
+  REFUNDED // Payment refunded to backer
+}
+
+enum FulfillmentStatus {
+  PENDING // Not yet started
+  PROCESSING // Being prepared for shipment
+  SHIPPED // Shipped to backer
+  DELIVERED // Confirmed delivered
+  CANCELLED // Fulfillment cancelled
+  DELAYED // Delayed beyond estimated delivery
+}
+
+enum ShippingStatus {
+  PENDING // Not shipped yet
+  PROCESSING // Preparing shipment
+  SHIPPED // In transit
+  DELIVERED // Delivered to backer
+  RETURNED // Returned to sender
+  LOST // Lost in transit
+}
+
+enum TeamMemberRole {
+  CREATOR // Campaign owner (full permissions)
+  CO_CREATOR // Co-owner (full permissions except delete)
+  MANAGER // Can edit, view backers, fulfill
+  VIEWER // Can only view campaign stats
+}
