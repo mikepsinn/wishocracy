@@ -69,24 +69,24 @@ export function calculatePreferenceGaps(
   totalBudgetUsd?: number
 ): PreferenceGap[] {
   return citizenPreferences
-    .map(pref => {
+    .reduce<PreferenceGap[]>((gaps, pref) => {
       const item = items.find(i => i.id === pref.itemId);
-      if (!item) return null;
-      
+      if (!item) return gaps;
+
       const preferredPct = pref.weight * 100;
       const actualPct = item.currentAllocationPct ?? 0;
       const gapPct = preferredPct - actualPct;
-      
-      return {
+
+      gaps.push({
         itemId: pref.itemId,
         itemName: item.name,
         preferredPct,
         actualPct,
         gapPct,
-        gapUsd: totalBudgetUsd ? (gapPct / 100) * totalBudgetUsd : undefined,
-      };
-    })
-    .filter((g): g is PreferenceGap => g !== null)
+        ...(totalBudgetUsd != null ? { gapUsd: (gapPct / 100) * totalBudgetUsd } : {}),
+      });
+      return gaps;
+    }, [])
     .sort((a, b) => Math.abs(b.gapPct) - Math.abs(a.gapPct)); // Largest gaps first
 }
 

@@ -103,9 +103,12 @@ export function buildComparisonMatrix(
     const j = indexMap.get(entry.itemBId);
     
     if (i === undefined || j === undefined) continue;
-    
-    matrix[i][j] = entry.ratio;
-    matrix[j][i] = 1 / entry.ratio;
+
+    const rowI = matrix[i];
+    const rowJ = matrix[j];
+    if (!rowI || !rowJ) continue;
+    rowI[j] = entry.ratio;
+    rowJ[i] = 1 / entry.ratio;
   }
   
   return matrix;
@@ -174,7 +177,7 @@ export function principalEigenvector(
     const newWeights = new Array<number>(n).fill(0);
     for (let i = 0; i < n; i++) {
       for (let j = 0; j < n; j++) {
-        newWeights[i] += (matrix[i]?.[j] ?? 1) * (weights[j] ?? 0);
+        newWeights[i] = (newWeights[i] ?? 0) + (matrix[i]?.[j] ?? 1) * (weights[j] ?? 0);
       }
     }
     
